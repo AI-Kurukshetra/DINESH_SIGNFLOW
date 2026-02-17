@@ -203,24 +203,31 @@ function removeRecipient(button) {
 
 // Proceed to editor
 function proceedToEditor() {
+    console.log('proceedToEditor() called');
+    
     if (!selectedFile) {
         alert('Please upload a document first.');
+        console.log('No file selected');
         return;
     }
 
     // Get form values
     const docTitle = document.getElementById('docTitle').value.trim();
+    console.log('Document title:', docTitle);
+    
     if (!docTitle) {
         alert('Please enter a document title.');
         document.getElementById('docTitle').focus();
+        console.log('Title is empty');
         return;
     }
 
     const docDescription = document.getElementById('docDescription').value.trim();
     const action = document.querySelector('input[name="action"]:checked').value;
+    console.log('Action:', action, 'Description:', docDescription);
 
-    // Create document object
-    const document = {
+    // Create document object with default signature fields
+    const newDocument = {
         name: docTitle,
         description: docDescription,
         fileName: selectedFile.name,
@@ -228,7 +235,33 @@ function proceedToEditor() {
         fileType: selectedFile.type,
         pages: Math.floor(Math.random() * 10) + 1, // Simulate page count
         status: 'draft',
-        type: action === 'sign' ? 'self' : 'sent'
+        type: action === 'sign' ? 'self' : 'sent',
+        fields: [
+            {
+                id: 'signature_1',
+                label: 'Your Signature',
+                type: 'signature',
+                page: 1,
+                x: 50,
+                y: 80,
+                width: 200,
+                height: 100,
+                required: true,
+                value: null
+            },
+            {
+                id: 'date_1',
+                label: 'Date',
+                type: 'date',
+                page: 1,
+                x: 270,
+                y: 80,
+                width: 200,
+                height: 40,
+                required: false,
+                value: null
+            }
+        ]
     };
 
     // If sending to others, get recipients
@@ -266,21 +299,29 @@ function proceedToEditor() {
             return;
         }
 
-        document.recipients = recipients;
-        document.signingOrder = document.getElementById('signingOrder').value;
-        document.emailMessage = document.getElementById('emailMessage').value.trim();
+        newDocument.recipients = recipients;
+        newDocument.signingOrder = document.getElementById('signingOrder').value;
+        newDocument.emailMessage = document.getElementById('emailMessage').value.trim();
     }
 
-    // Save document to storage
-    const savedDoc = StorageManager.addDocument(document);
-    
-    // Redirect based on action
-    if (action === 'sign') {
-        // Go directly to editor to add signature fields
-        window.location.href = `editor.html?id=${savedDoc.id}&mode=self`;
-    } else {
-        // Go to editor to add signature fields for recipients
-        window.location.href = `editor.html?id=${savedDoc.id}&mode=send`;
+    try {
+        console.log('Saving document to storage...');
+        // Save document to storage
+        const savedDoc = StorageManager.addDocument(newDocument);
+        console.log('Document saved:', savedDoc);
+        
+        if (!savedDoc || !savedDoc.id) {
+            console.error('ERROR: Document not saved properly or no ID returned');
+            alert('Error saving document. Please try again.');
+            return;
+        }
+        
+        console.log('Redirecting to sign page with ID:', savedDoc.id);
+        // Redirect directly to sign page to add signature
+        window.location.href = `sign.html?id=${savedDoc.id}`;
+    } catch (error) {
+        console.error('ERROR in proceedToEditor:', error);
+        alert('Error processing document: ' + error.message);
     }
 }
 
