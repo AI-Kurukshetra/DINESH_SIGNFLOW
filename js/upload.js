@@ -330,3 +330,156 @@ function isValidEmail(email) {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
 }
+
+/**
+ * Preview the signing workflow without navigation
+ */
+async function previewDocument() {
+    try {
+        // Validate form first
+        const titleInput = document.getElementById('documentTitle');
+        const emailInput = document.getElementById('userEmail');
+        const fileInput = document.getElementById('documentUpload');
+        
+        if (!titleInput.value.trim()) {
+            alert('Please enter a document title');
+            return;
+        }
+        
+        if (!emailInput.value.trim()) {
+            alert('Please enter your email');
+            return;
+        }
+        
+        if (!isValidEmail(emailInput.value)) {
+            alert('Please enter a valid email address');
+            return;
+        }
+        
+        if (!fileInput.files || fileInput.files.length === 0) {
+            alert('Please select a file to preview');
+            return;
+        }
+        
+        // Create temporary document for preview
+        const fileContent = await readFileAsBase64(fileInput.files[0]);
+        
+        const previewDoc = {
+            id: 'preview_' + Date.now(),
+            title: titleInput.value.trim(),
+            userEmail: emailInput.value.trim(),
+            fileName: fileInput.files[0].name,
+            fileContent: fileContent,
+            recipients: [],
+            signatureFields: [
+                { id: 'signature_1', type: 'signature', x: 100, y: 100, label: 'Signature 1' },
+                { id: 'date_1', type: 'date', x: 100, y: 150, label: 'Date' }
+            ],
+            status: 'draft',
+            createdAt: new Date().toISOString()
+        };
+        
+        // Save preview document
+        StorageManager.addDocument(previewDoc);
+        
+        // Load and display preview
+        loadPreview(previewDoc);
+        
+        // Open modal
+        document.getElementById('previewModal').style.display = 'block';
+        
+    } catch (error) {
+        console.error('Preview error:', error);
+        alert('Error loading preview: ' + error.message);
+    }
+}
+
+/**
+ * Load preview content
+ */
+function loadPreview(document) {
+    try {
+        const previewContent = document.getElementById('previewContent');
+        
+        // Create preview HTML with sign page content
+        const html = `
+            <div class="preview-document-container">
+                <div class="preview-sidebar">
+                    <div class="document-info">
+                        <h3>${document.title}</h3>
+                        <p><strong>File:</strong> ${document.fileName}</p>
+                        <p><strong>Email:</strong> ${document.userEmail}</p>
+                    </div>
+                </div>
+                
+                <div class="preview-main">
+                    <div class="canvas-area">
+                        <img id="previewImage" src="${document.fileContent}" alt="Document Preview" style="max-width: 100%; max-height: 500px; border: 1px solid #ddd; border-radius: 4px;">
+                    </div>
+                    
+                    <div class="signature-fields-preview">
+                        <h4>Signature Fields</h4>
+                        <div id="fieldsContainer" class="fields-container">
+                            ${document.signatureFields.map(field => `
+                                <div class="field-item" data-field-id="${field.id}">
+                                    <div class="field-label">${field.label}</div>
+                                    <div class="field-box">
+                                        <i class="fas fa-pen"></i> Click to add ${field.type}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        previewContent.innerHTML = html;
+        
+        // Add interaction hint
+        const hint = document.createElement('div');
+        hint.className = 'preview-hint';
+        hint.innerHTML = '<i class="fas fa-info-circle"></i> This is a preview. Click fields to see how signing works.';
+        previewContent.insertBefore(hint, previewContent.firstChild);
+        
+    } catch (error) {
+        console.error('Error loading preview:', error);
+        document.getElementById('previewContent').innerHTML = '<p style="color: red;">Error loading preview</p>';
+    }
+}
+
+/**
+ * Close preview modal
+ */
+function closePreview() {
+    document.getElementById('previewModal').style.display = 'none';
+}
+
+/**
+ * Close preview and proceed to actual signing
+ */
+function closePreviewAndProceed() {
+    closePreview();
+    proceedToEditor();
+}
+
+/**
+ * Helper: Convert file to base64
+ */
+function readFileAsBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
+
+// Close modal when clicking outside
+window.addEventListener('click', (e) => {
+    const modal = document.getElementById('previewModal');
+    if (e.target === modal) {
+        closePreview();
+    }
+});
+
