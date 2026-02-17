@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SignFlow - Register</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/auth.css">
+</head>
+<body class="auth-body">
+    <div class="auth-container">
+        <!-- Left Section - Branding -->
+        <div class="auth-left">
+            <div class="auth-logo">
+                <i class="fas fa-pen-nib"></i>
+                <h1>SignFlow</h1>
+            </div>
+            <h2>Join SignFlow</h2>
+            <p>Create an account and start signing documents securely in minutes</p>
+            <div class="auth-features">
+                <div class="auth-feature">
+                    <i class="fas fa-lock"></i>
+                    <span>Industry-standard encryption</span>
+                </div>
+                <div class="auth-feature">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Legally binding signatures</span>
+                </div>
+                <div class="auth-feature">
+                    <i class="fas fa-users"></i>
+                    <span>Join millions of users</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Section - Registration Form -->
+        <div class="auth-right">
+            <div class="register-form-container">
+                <h3>Create Account</h3>
+                
+                <!-- Error Messages -->
+                <div id="error-message" class="auth-error" style="display: none;"></div>
+
+                <!-- Success Message -->
+                <div id="success-message" class="auth-success" style="display: none;"></div>
+
+                <!-- Google Sign Up Button -->
+                <button class="btn-google" onclick="signUpWithGoogle()">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/logo_google.png" alt="Google">
+                    <span>Sign up with Google</span>
+                </button>
+
+                <!-- Divider -->
+                <div class="auth-divider">
+                    <span>or</span>
+                </div>
+
+                <!-- Registration Form -->
+                <form id="registration-form" class="auth-email-form">
+                    <!-- Full Name -->
+                    <div class="form-group">
+                        <label for="fullname">Full Name</label>
+                        <input 
+                            type="text" 
+                            id="fullname" 
+                            name="fullname" 
+                            placeholder="John Doe" 
+                            required
+                        >
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label for="reg-email">Email Address</label>
+                        <input 
+                            type="email" 
+                            id="reg-email" 
+                            name="email" 
+                            placeholder="you@example.com" 
+                            required
+                        >
+                    </div>
+
+                    <!-- Password -->
+                    <div class="form-group">
+                        <label for="reg-password">Password</label>
+                        <input 
+                            type="password" 
+                            id="reg-password" 
+                            name="password" 
+                            placeholder="Create a strong password" 
+                            required
+                            onkeyup="updatePasswordStrength()"
+                        >
+                        <div class="password-strength">
+                            <div>
+                                <div class="password-strength-bar" id="strength-bar"></div>
+                            </div>
+                            <div class="password-strength-text" id="strength-text">Password strength: Weak</div>
+                        </div>
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="form-group">
+                        <label for="confirm-password">Confirm Password</label>
+                        <input 
+                            type="password" 
+                            id="confirm-password" 
+                            name="confirmPassword" 
+                            placeholder="Confirm your password" 
+                            required
+                        >
+                    </div>
+
+                    <!-- Terms Checkbox -->
+                    <div class="form-remember">
+                        <input type="checkbox" id="terms" name="terms" required>
+                        <label for="terms">I agree to the <a href="#" onclick="return false;">Terms of Service</a> and <a href="#" onclick="return false;">Privacy Policy</a></label>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn-primary btn-login">Create Account</button>
+                </form>
+
+                <!-- Login Link -->
+                <div class="auth-footer">
+                    <p>Already have an account? <a href="login.html">Sign in</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="js/auth.js"></script>
+    <script src="js/userManager.js"></script>
+    <script src="js/storage.js"></script>
+
+    <script>
+        // Check if already logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            if (AuthModule.isAuthenticated()) {
+                window.location.href = 'dashboard.html';
+            }
+        });
+
+        // Handle registration form submission
+        document.getElementById('registration-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const fullname = document.getElementById('fullname').value.trim();
+            const email = document.getElementById('reg-email').value.trim();
+            const password = document.getElementById('reg-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const termsAccepted = document.getElementById('terms').checked;
+
+            // Clear messages
+            clearMessages();
+
+            // Validation
+            if (!fullname || !email || !password || !confirmPassword) {
+                showError('All fields are required');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showError('Passwords do not match');
+                return;
+            }
+
+            if (password.length < 8) {
+                showError('Password must be at least 8 characters');
+                return;
+            }
+
+            if (!termsAccepted) {
+                showError('You must accept the Terms of Service and Privacy Policy');
+                return;
+            }
+
+            try {
+                // Check if user already exists
+                if (UserManager.getUserByEmail(email)) {
+                    showError('This email is already registered. Try logging in.');
+                    return;
+                }
+
+                // Create user
+                const user = UserManager.createUser({
+                    email: email,
+                    name: fullname,
+                    password: password,
+                    provider: 'email',
+                    verified: false
+                });
+
+                // Auto login after registration
+                AuthModule.emailSignIn(email, password, false);
+
+            } catch (error) {
+                showError(error.message);
+            }
+        });
+
+        // Update password strength indicator
+        function updatePasswordStrength() {
+            const password = document.getElementById('reg-password').value;
+            const strengthBar = document.getElementById('strength-bar');
+            const strengthText = document.getElementById('strength-text');
+
+            let strength = 0;
+            
+            // Check password criteria
+            if (password.length >= 8) strength++;
+            if (password.length >= 12) strength++;
+            if (/[A-Z]/.test(password)) strength++; // Uppercase
+            if (/[0-9]/.test(password)) strength++; // Numbers
+            if (/[^A-Za-z0-9]/.test(password)) strength++; // Special chars
+
+            // Set strength indicator
+            strengthBar.className = 'password-strength-bar';
+            if (strength <= 2) {
+                strengthBar.classList.add('weak');
+                strengthText.textContent = 'Password strength: Weak';
+            } else if (strength <= 3) {
+                strengthBar.classList.add('medium');
+                strengthText.textContent = 'Password strength: Medium';
+            } else {
+                strengthBar.classList.add('strong');
+                strengthText.textContent = 'Password strength: Strong';
+            }
+        }
+
+        // Show error message
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            errorDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Show success message
+        function showSuccess(message) {
+            const successDiv = document.getElementById('success-message');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+        }
+
+        // Clear messages
+        function clearMessages() {
+            document.getElementById('error-message').style.display = 'none';
+            document.getElementById('success-message').style.display = 'none';
+        }
+
+        // Google Sign Up
+        function signUpWithGoogle() {
+            AuthModule.googleSignIn();
+        }
+    </script>
+</body>
+</html>

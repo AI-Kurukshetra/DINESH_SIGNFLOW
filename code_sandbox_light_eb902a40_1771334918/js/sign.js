@@ -5,6 +5,7 @@ let currentPage = 1;
 let totalPages = 1;
 let zoomLevel = 100;
 let currentFieldId = null;
+let currentRecipientEmail = null;
 
 // Signature variables
 let canvas, ctx;
@@ -20,6 +21,10 @@ document.addEventListener('DOMContentLoaded', function() {
 function initSignPage() {
     const urlParams = new URLSearchParams(window.location.search);
     const docId = urlParams.get('id');
+    const recipientEmail = urlParams.get('recipient');
+    if (recipientEmail) {
+        currentRecipientEmail = decodeURIComponent(recipientEmail);
+    }
 
     if (!docId) {
         alert('No document specified');
@@ -521,6 +526,24 @@ function completeSignature() {
         fields: documentFields,
         status: 'signed',
         signedDate: new Date().toISOString()
+    });
+
+    // If the signer was identified via recipient param, update their recipient status
+    if (currentRecipientEmail && currentDocument.recipients) {
+        const rec = currentDocument.recipients.find(r => r.email.toLowerCase() === currentRecipientEmail.toLowerCase());
+        if (rec) {
+            rec.status = 'signed';
+            StorageManager.updateDocument(currentDocument.id, { recipients: currentDocument.recipients });
+        }
+    }
+
+    // Add a notification for signature completion
+    StorageManager.addNotification({
+        type: 'signature_completed',
+        documentId: currentDocument.id,
+        documentName: currentDocument.name,
+        by: currentRecipientEmail || (UserManager.getCurrentUser() && UserManager.getCurrentUser().email) || 'unknown',
+        status: 'completed'
     });
 
     alert('Document signed successfully!');

@@ -16,11 +16,19 @@
                 <i class="fas fa-pen-nib"></i>
                 <span>SignFlow</span>
             </div>
-            <div class="nav-menu">
+            <div class="nav-menu" id="nav-menu">
                 <a href="#features">Features</a>
                 <a href="#security">Security</a>
                 <a href="#pricing">Pricing</a>
                 <a href="dashboard.html" class="btn-primary">Dashboard</a>
+                <span id="nav-auth">
+                    <a href="login.html" class="btn-secondary">Login</a>
+                    <a href="register.html" class="btn-primary">Sign Up</a>
+                </span>
+                <span id="nav-user" style="display: none;">
+                    <a href="profile.html" id="user-profile-link"><i class="fas fa-user-circle"></i> <span id="user-name-nav">Profile</span></a>
+                    <a href="#" onclick="logoutFromNav()">Logout</a>
+                </span>
             </div>
             <div class="nav-toggle" onclick="toggleMobileMenu()">
                 <i class="fas fa-bars"></i>
@@ -259,6 +267,9 @@
         </div>
     </footer>
 
+    <script src="js/auth.js"></script>
+    <script src="js/userManager.js"></script>
+    <script src="js/storage.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>

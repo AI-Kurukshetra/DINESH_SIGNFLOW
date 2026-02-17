@@ -33,21 +33,67 @@ document.addEventListener('click', function(event) {
     }
 });
 
-// Initialize storage on first load
-if (!localStorage.getItem('signflow_initialized')) {
-    const initialData = {
-        documents: [],
-        signatures: [],
-        settings: {
-            email: 'user@example.com',
-            name: 'Demo User',
-            notifications: true
-        },
-        initialized: true
-    };
+// Update navigation based on authentication status
+document.addEventListener('DOMContentLoaded', function() {
+    initializeStorageOnFirstLoad();
+    updateNavigation();
+});
+
+// Listen for authentication events
+window.addEventListener('auth:login', function() {
+    updateNavigation();
+});
+
+window.addEventListener('auth:logout', function() {
+    updateNavigation();
+});
+
+// Update navigation UI
+function updateNavigation() {
+    const navAuth = document.getElementById('nav-auth');
+    const navUser = document.getElementById('nav-user');
     
-    localStorage.setItem('signflow_documents', JSON.stringify(initialData.documents));
-    localStorage.setItem('signflow_signatures', JSON.stringify(initialData.signatures));
-    localStorage.setItem('signflow_settings', JSON.stringify(initialData.settings));
-    localStorage.setItem('signflow_initialized', 'true');
+    if (!navAuth || !navUser) return;
+
+    if (AuthModule.isAuthenticated()) {
+        const user = UserManager.getCurrentUser();
+        if (user) {
+            navAuth.style.display = 'none';
+            navUser.style.display = 'flex';
+            navUser.style.gap = '12px';
+            document.getElementById('user-name-nav').textContent = user.name.split(' ')[0];
+        }
+    } else {
+        navAuth.style.display = 'flex';
+        navAuth.style.gap = '12px';
+        navUser.style.display = 'none';
+    }
+}
+
+// Logout from navigation
+function logoutFromNav() {
+    if (confirm('Are you sure you want to log out?')) {
+        AuthModule.signOut();
+    }
+}
+
+// Initialize storage on first load
+function initializeStorageOnFirstLoad() {
+    if (!localStorage.getItem('signflow_initialized')) {
+        const initialData = {
+            documents: [],
+            signatures: [],
+            settings: {
+                email: 'user@example.com',
+                name: 'Demo User',
+                notifications: true
+            },
+            initialized: true
+        };
+        
+        localStorage.setItem('signflow_documents', JSON.stringify(initialData.documents));
+        localStorage.setItem('signflow_signatures', JSON.stringify(initialData.signatures));
+        localStorage.setItem('signflow_settings', JSON.stringify(initialData.settings));
+        localStorage.setItem('signflow_initialized', 'true');
+    }
 }

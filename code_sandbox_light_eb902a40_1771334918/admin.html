@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SignFlow - Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <style>
+        .admin-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+            background: #f5f5f5;
+        }
+
+        .admin-sidebar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 24px;
+            color: white;
+        }
+
+        .admin-sidebar h3 {
+            margin: 0 0 24px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .admin-sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .admin-sidebar li {
+            margin-bottom: 8px;
+        }
+
+        .admin-sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            padding: 10px 12px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .admin-sidebar a:hover,
+        .admin-sidebar a.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .admin-content {
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stat-card .stat-number {
+            font-size: 28px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+
+        .stat-card .stat-label {
+            font-size: 13px;
+            color: #999;
+        }
+
+        .users-table {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .table-header {
+            display: grid;
+            grid-template-columns: 200px 200px 120px 100px 100px;
+            gap: 16px;
+            padding: 16px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #eee;
+            font-weight: 600;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .table-row {
+            display: grid;
+            grid-template-columns: 200px 200px 120px 100px 100px;
+            gap: 16px;
+            padding: 16px;
+            border-bottom: 1px solid #eee;
+            align-items: center;
+            font-size: 13px;
+        }
+
+        .table-row:hover {
+            background: #f8f9fa;
+        }
+
+        .user-email {
+            color: #667eea;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: #e0f7e0;
+            color: #1b5e20;
+        }
+
+        .status-inactive {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .status-suspended {
+            background: #ffe0e0;
+            color: #d32f2f;
+        }
+
+        .role-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 6px;
+        }
+
+        .action-buttons button {
+            padding: 4px 8px;
+            border: none;
+            border-radius: 4px;
+            background: #f0f0f0;
+            cursor: pointer;
+            font-size: 11px;
+            transition: all 0.3s ease;
+        }
+
+        .action-buttons button:hover {
+            background: #ddd;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .search-bar button {
+            padding: 10px 16px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .admin-container {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-sidebar {
+                display: none;
+            }
+
+            .table-header,
+            .table-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <h3>
+                <i class="fas fa-shield-alt"></i>
+                Admin Panel
+            </h3>
+            <ul>
+                <li><a href="#" onclick="switchAdminTab('dashboard', event)" class="active"><i class="fas fa-chart-bar"></i> Dashboard</a></li>
+                <li><a href="#" onclick="switchAdminTab('users', event)"><i class="fas fa-users"></i> Users</a></li>
+                <li><a href="#" onclick="switchAdminTab('monitoring', event)"><i class="fas fa-eye"></i> Monitoring</a></li>
+                <li><a href="#" onclick="switchAdminTab('settings', event)"><i class="fas fa-cogs"></i> Settings</a></li>
+                <li style="margin-top: 24px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 12px;">
+                    <a href="#" onclick="logOutAdmin()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-content">
+            <!-- Admin Header -->
+            <div class="admin-header">
+                <div>
+                    <h1>Admin Dashboard</h1>
+                    <small id="admin-user-info"></small>
+                </div>
+                <div id="admin-notifications">
+                    <i class="fas fa-bell"></i>
+                </div>
+            </div>
+
+            <!-- Dashboard Tab -->
+            <div id="dashboard-tab" class="admin-tab">
+                <!-- Statistics -->
+                <div class="admin-stats" id="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-number" id="stat-total">0</div>
+                        <div class="stat-label">Total Users</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="stat-active">0</div>
+                        <div class="stat-label">Active Users</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="stat-google">0</div>
+                        <div class="stat-label">Google Auth</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="stat-suspended">0</div>
+                        <div class="stat-label">Suspended</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Tab -->
+            <div id="users-tab" class="admin-tab" style="display: none;">
+                <!-- Search -->
+                <div class="search-bar">
+                    <input type="text" id="user-search" placeholder="Search users by name or email...">
+                    <button onclick="searchUsers()">Search</button>
+                </div>
+
+                <!-- Users Table -->
+                <div class="users-table">
+                    <div class="table-header">
+                        <div>Name</div>
+                        <div>Email</div>
+                        <div>Role</div>
+                        <div>Status</div>
+                        <div>Actions</div>
+                    </div>
+                    <div id="users-list">
+                        <!-- Users will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Monitoring Tab -->
+            <div id="monitoring-tab" class="admin-tab" style="display: none;">
+                <p>System monitoring and logs coming soon...</p>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="settings-tab" class="admin-tab" style="display: none;">
+                <p>Admin settings coming soon...</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/auth.js"></script>
+    <script src="js/userManager.js"></script>
+    <script src="js/storage.js"></script>
+
+    <script>
+        // Require admin access
+        document.addEventListener('DOMContentLoaded', function() {
+            requireAuth();
+            checkAdminAccess();
+            loadDashboard();
+        });
+
+        function checkAdminAccess() {
+            const user = UserManager.getCurrentUser();
+            if (!user || user.role !== 'admin') {
+                alert('Admin access required');
+                window.location.href = 'dashboard.html';
+            }
+            document.getElementById('admin-user-info').textContent = `Logged in as: ${user.name} (Admin)`;
+        }
+
+        function loadDashboard() {
+            const stats = UserManager.getUserStatistics();
+            document.getElementById('stat-total').textContent = stats.total;
+            document.getElementById('stat-active').textContent = stats.active;
+            document.getElementById('stat-google').textContent = stats.googleAuth;
+            document.getElementById('stat-suspended').textContent = stats.suspended;
+            loadUsersList();
+        }
+
+        function loadUsersList() {
+            const users = UserManager.getAllUsers();
+            const usersList = document.getElementById('users-list');
+            usersList.innerHTML = '';
+
+            if (users.length === 0) {
+                usersList.innerHTML = '<div style="padding: 16px; color: #999;">No users found</div>';
+                return;
+            }
+
+            users.forEach(user => {
+                const row = document.createElement('div');
+                row.className = 'table-row';
+                row.innerHTML = `
+                    <div>${user.name}</div>
+                    <div class="user-email">${user.email}</div>
+                    <div><span class="role-badge">${user.role}</span></div>
+                    <div>
+                        <span class="status-badge status-${user.status}">
+                            ${user.status}
+                        </span>
+                    </div>
+                    <div class="action-buttons">
+                        <button onclick="editUser('${user.id}')">Edit</button>
+                        <button onclick="viewUser('${user.id}')">View</button>
+                        <button onclick="changeUserRole('${user.id}')">Role</button>
+                        <button onclick="suspendUser('${user.id}')" style="color: #d32f2f;">Suspend</button>
+                    </div>
+                `;
+                usersList.appendChild(row);
+            });
+        }
+
+        function switchAdminTab(tabName, e) {
+            e.preventDefault();
+
+            // Hide all tabs
+            document.querySelectorAll('.admin-tab').forEach(tab => {
+                tab.style.display = 'none';
+            });
+
+            // Remove active class from all links
+            document.querySelectorAll('.admin-sidebar a').forEach(link => {
+                link.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName + '-tab').style.display = 'block';
+            e.target.closest('a').classList.add('active');
+
+            if (tabName === 'users') {
+                loadUsersList();
+            }
+        }
+
+        function searchUsers() {
+            const query = document.getElementById('user-search').value;
+            if (!query.trim()) {
+                loadUsersList();
+                return;
+            }
+
+            const results = UserManager.searchUsers(query);
+            const usersList = document.getElementById('users-list');
+            usersList.innerHTML = '';
+
+            results.forEach(user => {
+                const row = document.createElement('div');
+                row.className = 'table-row';
+                row.innerHTML = `
+                    <div>${user.name}</div>
+                    <div class="user-email">${user.email}</div>
+                    <div><span class="role-badge">${user.role}</span></div>
+                    <div>
+                        <span class="status-badge status-${user.status}">
+                            ${user.status}
+                        </span>
+                    </div>
+                    <div class="action-buttons">
+                        <button onclick="editUser('${user.id}')">Edit</button>
+                        <button onclick="viewUser('${user.id}')">View</button>
+                        <button onclick="changeUserRole('${user.id}')">Role</button>
+                    </div>
+                `;
+                usersList.appendChild(row);
+            });
+        }
+
+        function editUser(userId) {
+            alert('User editing feature coming soon');
+        }
+
+        function viewUser(userId) {
+            const user = UserManager.getUserById(userId);
+            console.log('User Data:', user);
+            alert(`Viewing user: ${user.name}\nEmail: ${user.email}\nRole: ${user.role}\nCreated: ${new Date(user.createdAt).toLocaleString()}`);
+        }
+
+        function changeUserRole(userId) {
+            const user = UserManager.getUserById(userId);
+            const newRole = prompt(`Current role: ${user.role}\nNew role (user/admin/moderator):`, user.role);
+            if (newRole) {
+                try {
+                    UserManager.updateUserRole(userId, newRole);
+                    loadUsersList();
+                    alert('User role updated successfully');
+                } catch (error) {
+                    alert('Error: ' + error.message);
+                }
+            }
+        }
+
+        function suspendUser(userId) {
+            const reason = prompt('Reason for suspension:');
+            if (reason) {
+                try {
+                    UserManager.suspendUser(userId, reason);
+                    loadUsersList();
+                    alert('User suspended successfully');
+                } catch (error) {
+                    alert('Error: ' + error.message);
+                }
+            }
+        }
+
+        function logOutAdmin() {
+            if (confirm('Logout from admin panel?')) {
+                AuthModule.signOut();
+            }
+        }
+    </script>
+</body>
+</html>

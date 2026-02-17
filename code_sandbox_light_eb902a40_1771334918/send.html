@@ -54,6 +54,18 @@
                 <div id="recipientsList">
                     <!-- Recipients loaded here -->
                 </div>
+                <div class="add-recipient">
+                    <h4>Add Recipient</h4>
+                    <div class="recipient-form">
+                        <input type="text" id="newRecipientName" placeholder="Full name">
+                        <input type="email" id="newRecipientEmail" placeholder="email@example.com">
+                        <select id="newRecipientType">
+                            <option value="signer">Signer</option>
+                            <option value="viewer">Viewer</option>
+                        </select>
+                        <button class="btn-primary" onclick="addRecipient()">Add</button>
+                    </div>
+                </div>
             </div>
 
             <!-- Email Message -->

@@ -133,6 +133,40 @@
     font-weight: 500;
 }
 
+.recipient-actions {
+    margin-top: 0.75rem;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.add-recipient {
+    margin-top: 1rem;
+}
+
+.recipient-form {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    align-items: center;
+}
+
+.recipient-form input,
+.recipient-form select {
+    padding: 8px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-family: 'Inter', sans-serif;
+}
+
+.recipient-form button {
+    padding: 8px 12px;
+}
+
+.btn-outline.small {
+    padding: 6px 10px;
+    font-size: 12px;
+}
+
 .message-preview {
     background-color: var(--white);
     padding: 1.5rem;

@@ -4,6 +4,8 @@ const StorageManager = {
     keys: {
         documents: 'signflow_documents',
         signatures: 'signflow_signatures',
+        sendRequests: 'signflow_send_requests',
+        notifications: 'signflow_notifications',
         settings: 'signflow_settings',
         initialized: 'signflow_initialized'
     },
@@ -202,6 +204,43 @@ const StorageManager = {
         );
     },
 
+    // Send requests / notifications
+    getSendRequests() {
+        const data = localStorage.getItem(this.keys.sendRequests);
+        return data ? JSON.parse(data) : [];
+    },
+
+    setSendRequests(requests) {
+        localStorage.setItem(this.keys.sendRequests, JSON.stringify(requests));
+    },
+
+    addSendRequest(request) {
+        const requests = this.getSendRequests();
+        request.id = this.generateId();
+        request.createdAt = new Date().toISOString();
+        requests.push(request);
+        this.setSendRequests(requests);
+        return request;
+    },
+
+    getNotifications() {
+        const data = localStorage.getItem(this.keys.notifications);
+        return data ? JSON.parse(data) : [];
+    },
+
+    setNotifications(notifications) {
+        localStorage.setItem(this.keys.notifications, JSON.stringify(notifications));
+    },
+
+    addNotification(notification) {
+        const notifs = this.getNotifications();
+        notification.id = this.generateId();
+        notification.createdAt = new Date().toISOString();
+        notifs.push(notification);
+        this.setNotifications(notifs);
+        return notification;
+    },
+
     // Add sample data for demo
     addSampleData() {
         const sampleDocuments = [
@@ -277,7 +316,37 @@ const StorageManager = {
         localStorage.removeItem(this.keys.signatures);
         localStorage.removeItem(this.keys.settings);
         localStorage.removeItem(this.keys.initialized);
+    },
+
+    // Get documents by user
+    getDocumentsByUser(userId) {
+        const documents = this.getDocuments();
+        return documents.filter(doc => doc.userId === userId || doc.sender === userId);
+    },
+
+    // Get signatures by user
+    getSignaturesByUser(userId) {
+        const signatures = this.getSignatures();
+        return signatures.filter(sig => sig.userId === userId);
+    },
+
+    // Get activities by user
+    getActivitiesByUser(userId) {
+        // Activities would be stored separately or derived from document/signature history
+        const docs = this.getDocumentsByUser(userId);
+        const activities = [];
+        docs.forEach(doc => {
+            activities.push({
+                type: 'document_activity',
+                action: doc.type === 'sent' ? 'sent' : 'received',
+                document: doc.name,
+                timestamp: doc.createdAt,
+                status: doc.status
+            });
+        });
+        return activities.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
     }
+
 };
 
 // Initialize storage on load
