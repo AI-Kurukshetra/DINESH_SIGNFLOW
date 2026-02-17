@@ -239,20 +239,38 @@ function clearCanvas() {
 }
 
 function updatePenColor() {
-    const color = document.getElementById('penColor').value;
-    ctx.strokeStyle = color;
+    const colorSelect = document.getElementById('penColor');
+    if (colorSelect && ctx) {
+        const color = colorSelect.value;
+        ctx.strokeStyle = color;
+        console.log('Pen color updated to:', color);
+    }
 }
 
 function updatePenSize() {
-    const size = document.getElementById('penSize').value;
-    ctx.lineWidth = size;
+    const sizeInput = document.getElementById('penSize');
+    if (sizeInput && ctx) {
+        const size = sizeInput.value;
+        ctx.lineWidth = size;
+        console.log('Pen size updated to:', size);
+    }
 }
 
 function openSignatureModal(type) {
+    console.log('Opening signature modal for type:', type);
     const modal = document.getElementById('signatureModal');
     if (modal) {
         modal.classList.add('active');
-        clearCanvas();
+        console.log('Modal shown, clearing canvas...');
+        // Give a moment for DOM to render before clearing
+        setTimeout(() => {
+            clearCanvas();
+            // Reset form fields
+            document.getElementById('signatureText').value = '';
+            signatureData = null;
+        }, 100);
+    } else {
+        console.error('Signature modal not found');
     }
 }
 
@@ -304,7 +322,19 @@ function handleSignatureUpload(event) {
 }
 
 function saveSignature() {
-    const activeTab = document.querySelector('.signature-tab-content.active').id;
+    // Validate that a field was selected
+    if (!currentFieldId) {
+        alert('Please click on a field first to add a signature');
+        return;
+    }
+
+    const activeTabElement = document.querySelector('.signature-tab-content.active');
+    if (!activeTabElement) {
+        alert('Error: No tab selected');
+        return;
+    }
+
+    const activeTab = activeTabElement.id;
     
     if (activeTab === 'draw-tab') {
         if (isCanvasEmpty()) {
@@ -326,6 +356,13 @@ function saveSignature() {
         }
     }
 
+    // Verify signature data was captured
+    if (!signatureData) {
+        alert('Error: Could not capture signature. Please try again.');
+        return;
+    }
+
+    console.log('Saving signature for field:', currentFieldId);
     fillFieldWithSignature(currentFieldId, signatureData);
     closeSignatureModal();
 }
@@ -339,17 +376,27 @@ function isCanvasEmpty() {
 
 function fillFieldWithSignature(fieldId, signature) {
     const field = documentFields.find(f => f.id === fieldId);
-    if (!field) return;
+    if (!field) {
+        console.error('Field not found:', fieldId);
+        return;
+    }
 
+    console.log('Filling field', fieldId, 'with signature');
+    
     field.value = signature;
     field.completed = true;
 
     const fieldElement = document.getElementById(fieldId);
     if (fieldElement) {
         fieldElement.classList.add('filled');
-        fieldElement.innerHTML = '<i class="fas fa-check-circle"></i><span class="field-value">Signed</span>';
+        // Show a visual indication that signature was added
+        fieldElement.innerHTML = `
+            <i class="fas fa-check-circle" style="color: var(--success-color);"></i>
+            <span class="field-value">✓ Signed</span>
+        `;
     }
 
+    console.log('Field updated successfully');
     updateProgress();
     renderFieldsChecklist();
 }
