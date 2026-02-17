@@ -1,0 +1,20 @@
+{
+  "buildCommand": "echo 'Static site - no build needed'",
+  "devCommand": "npx http-server . -p 3000",
+  "public": true,
+  "name": "DINESH_SIGNFLOW",
+  "projectSettings": {
+    "framework": "other",
+    "buildCommand": null,
+    "outputDirectory": "."
+  },
+  "env": [],
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ]
+}
