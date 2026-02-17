@@ -1,0 +1,454 @@
+/* Sign Page Layout */
+.sign-container {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    height: calc(100vh - 80px);
+    background-color: var(--secondary-color);
+}
+
+/* Document Sidebar */
+.document-sidebar {
+    background-color: var(--white);
+    border-right: 1px solid var(--border-color);
+    padding: 2rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.sidebar-header h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--text-dark);
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background-color: var(--warning-color);
+    color: var(--white);
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.document-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.info-item i {
+    font-size: 1.25rem;
+    color: var(--primary-color);
+    margin-top: 0.25rem;
+}
+
+.info-item label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-gray);
+    margin-bottom: 0.25rem;
+}
+
+.info-item span {
+    display: block;
+    font-weight: 500;
+    color: var(--text-dark);
+}
+
+/* Fields Checklist */
+.fields-checklist {
+    border-top: 1px solid var(--border-color);
+    padding-top: 1.5rem;
+}
+
+.fields-checklist h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--text-dark);
+}
+
+#fieldsList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.field-checklist-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background-color: var(--secondary-color);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.field-checklist-item:hover {
+    background-color: var(--primary-light);
+    color: var(--white);
+}
+
+.field-checklist-item.completed {
+    background-color: var(--success-color);
+    color: var(--white);
+}
+
+.field-checklist-item i {
+    font-size: 1.1rem;
+}
+
+.field-checklist-item span {
+    flex: 1;
+    font-weight: 500;
+}
+
+/* Progress Indicator */
+.progress-indicator {
+    border-top: 1px solid var(--border-color);
+    padding-top: 1.5rem;
+}
+
+.progress-text {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+/* Sign Main Area */
+.sign-main {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.sign-toolbar {
+    background-color: var(--white);
+    border-bottom: 1px solid var(--border-color);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.document-viewer {
+    flex: 1;
+    overflow: auto;
+    padding: 2rem;
+}
+
+.viewer-wrapper {
+    max-width: 850px;
+    margin: 0 auto;
+    transform-origin: top center;
+    transition: transform 0.3s ease;
+}
+
+.viewer-page {
+    background-color: var(--white);
+    box-shadow: var(--shadow-lg);
+    margin-bottom: 2rem;
+    position: relative;
+    aspect-ratio: 8.5 / 11;
+    min-height: 1100px;
+}
+
+.viewer-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+/* Interactive Fields */
+.interactive-field {
+    position: absolute;
+    border: 2px solid var(--primary-color);
+    background-color: rgba(0, 102, 255, 0.1);
+    border-radius: 4px;
+    padding: 0.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    animation: pulse 2s infinite;
+}
+
+.interactive-field:hover {
+    background-color: rgba(0, 102, 255, 0.2);
+    transform: scale(1.05);
+}
+
+.interactive-field.filled {
+    background-color: rgba(0, 200, 83, 0.1);
+    border-color: var(--success-color);
+    animation: none;
+}
+
+.interactive-field i {
+    color: var(--primary-color);
+}
+
+.interactive-field.filled i {
+    color: var(--success-color);
+}
+
+.field-placeholder {
+    font-size: 0.9rem;
+    color: var(--text-gray);
+}
+
+.field-value {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-dark);
+}
+
+@keyframes pulse {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(0, 102, 255, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 0 10px rgba(0, 102, 255, 0);
+    }
+}
+
+/* Signature Modal */
+.modal-large {
+    max-width: 700px;
+}
+
+.signature-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 1rem;
+    background-color: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    color: var(--text-gray);
+}
+
+.tab-btn:hover {
+    color: var(--primary-color);
+}
+
+.tab-btn.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+}
+
+.signature-tab-content {
+    display: none;
+}
+
+.signature-tab-content.active {
+    display: block;
+}
+
+/* Draw Tab */
+.canvas-container {
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--white);
+    margin-bottom: 1rem;
+    overflow: hidden;
+}
+
+#signatureCanvas {
+    display: block;
+    cursor: crosshair;
+    touch-action: none;
+    width: 100%;
+    height: auto;
+}
+
+.canvas-controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+#penColor {
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-family: inherit;
+}
+
+#penSize {
+    flex: 1;
+}
+
+/* Type Tab */
+.type-signature {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+#signatureText {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-family: inherit;
+}
+
+#signatureText:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.signature-fonts {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.font-option {
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.font-option:hover {
+    border-color: var(--primary-color);
+    background-color: var(--secondary-color);
+}
+
+.font-option.active {
+    border-color: var(--primary-color);
+    background-color: var(--secondary-color);
+}
+
+.font-preview {
+    font-size: 2rem;
+    text-align: center;
+    color: var(--text-dark);
+}
+
+/* Upload Tab */
+.upload-signature {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.upload-area {
+    border: 2px dashed var(--border-color);
+    border-radius: 8px;
+    padding: 3rem 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.upload-area:hover {
+    border-color: var(--primary-color);
+    background-color: var(--secondary-color);
+}
+
+.upload-area i {
+    font-size: 3rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.upload-area p {
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.upload-preview {
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+}
+
+.upload-preview img {
+    max-width: 100%;
+    height: auto;
+    max-height: 200px;
+}
+
+/* Responsive Design */
+@media (max-width: 968px) {
+    .sign-container {
+        grid-template-columns: 1fr;
+    }
+
+    .document-sidebar {
+        display: none;
+    }
+
+    .sign-toolbar {
+        padding: 1rem;
+    }
+
+    .document-viewer {
+        padding: 1rem;
+    }
+
+    .modal-large {
+        max-width: 95%;
+    }
+
+    #signatureCanvas {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 640px) {
+    .signature-tabs {
+        flex-direction: column;
+    }
+
+    .tab-btn {
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .tab-btn.active {
+        border-left: 3px solid var(--primary-color);
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .canvas-controls {
+        flex-direction: column;
+    }
+
+    .font-preview {
+        font-size: 1.5rem;
+    }
+}

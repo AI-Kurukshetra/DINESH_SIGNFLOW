@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Document - SignFlow</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/upload.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <i class="fas fa-pen-nib"></i>
+                <span>SignFlow</span>
+            </div>
+            <div class="nav-menu">
+                <a href="index.html">Home</a>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="settings.html">Settings</a>
+                <div class="user-menu">
+                    <i class="fas fa-user-circle"></i>
+                    <span id="userName">Demo User</span>
+                </div>
+            </div>
+            <div class="nav-toggle" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Upload Container -->
+    <div class="upload-container">
+        <div class="upload-card">
+            <div class="upload-header">
+                <a href="dashboard.html" class="back-btn">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+                <h1>Upload Document</h1>
+                <p>Upload your document to start the signing process</p>
+            </div>
+
+            <!-- Upload Area -->
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <h3>Drag and drop your document here</h3>
+                <p>or click to browse</p>
+                <input type="file" id="fileInput" accept=".pdf,.doc,.docx" hidden>
+                <button class="btn-primary" onclick="document.getElementById('fileInput').click()">
+                    <i class="fas fa-folder-open"></i> Browse Files
+                </button>
+                <div class="upload-info">
+                    <small>Supported formats: PDF, DOC, DOCX (Max 10MB)</small>
+                </div>
+            </div>
+
+            <!-- File Preview (Hidden initially) -->
+            <div class="file-preview" id="filePreview" style="display: none;">
+                <div class="file-info">
+                    <div class="file-icon">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
+                    <div class="file-details">
+                        <h3 id="fileName">Document.pdf</h3>
+                        <p id="fileSize">245 KB</p>
+                    </div>
+                    <button class="btn-outline btn-small" onclick="removeFile()">
+                        <i class="fas fa-times"></i> Remove
+                    </button>
+                </div>
+
+                <!-- Document Details Form -->
+                <div class="document-form">
+                    <div class="form-group">
+                        <label for="docTitle">Document Title *</label>
+                        <input type="text" id="docTitle" placeholder="Enter document title" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="docDescription">Description</label>
+                        <textarea id="docDescription" rows="3" placeholder="Brief description of the document"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>What would you like to do?</label>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="action" value="sign" checked>
+                                <span>Sign it myself</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="action" value="send">
+                                <span>Send to others for signature</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Recipients Section (Hidden initially) -->
+                    <div id="recipientsSection" style="display: none;">
+                        <div class="form-group">
+                            <label>Recipients</label>
+                            <div id="recipientsList">
+                                <div class="recipient-item">
+                                    <input type="email" placeholder="Email address" class="recipient-email">
+                                    <input type="text" placeholder="Full name" class="recipient-name">
+                                    <button class="btn-outline btn-small" onclick="removeRecipient(this)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <button class="btn-outline btn-small" onclick="addRecipient()">
+                                <i class="fas fa-plus"></i> Add Recipient
+                            </button>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Signing Order</label>
+                            <select id="signingOrder">
+                                <option value="parallel">All recipients sign in parallel</option>
+                                <option value="sequential">Recipients sign in order</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="emailMessage">Message to Recipients</label>
+                            <textarea id="emailMessage" rows="3" placeholder="Add a personal message (optional)"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="form-actions">
+                        <button class="btn-outline" onclick="window.location.href='dashboard.html'">
+                            Cancel
+                        </button>
+                        <button class="btn-primary" onclick="proceedToEditor()">
+                            Continue <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upload Progress (Hidden initially) -->
+            <div class="upload-progress" id="uploadProgress" style="display: none;">
+                <div class="progress-icon">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </div>
+                <h3>Uploading document...</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+                <p id="progressText">0%</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/upload.js"></script>
+</body>
+</html>

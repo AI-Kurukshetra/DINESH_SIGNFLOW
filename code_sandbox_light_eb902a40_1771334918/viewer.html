@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Viewer - SignFlow</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/viewer.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <i class="fas fa-pen-nib"></i>
+                <span>SignFlow</span>
+            </div>
+            <div class="nav-menu">
+                <a href="index.html">Home</a>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="settings.html">Settings</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Viewer Container -->
+    <div class="viewer-container">
+        <!-- Sidebar -->
+        <aside class="viewer-sidebar">
+            <div class="document-details">
+                <h3 id="docTitle">Document Title</h3>
+                <div class="status-indicator" id="statusIndicator">
+                    <i class="fas fa-circle"></i>
+                    <span id="statusText">Pending</span>
+                </div>
+            </div>
+
+            <div class="detail-section">
+                <h4>Details</h4>
+                <div class="detail-item">
+                    <label>Sent by:</label>
+                    <span id="senderInfo">-</span>
+                </div>
+                <div class="detail-item">
+                    <label>Created:</label>
+                    <span id="createdDate">-</span>
+                </div>
+                <div class="detail-item">
+                    <label>Pages:</label>
+                    <span id="pageCount">-</span>
+                </div>
+                <div class="detail-item">
+                    <label>File Size:</label>
+                    <span id="fileSize">-</span>
+                </div>
+            </div>
+
+            <div class="detail-section">
+                <h4>Recipients</h4>
+                <div id="recipientsList">
+                    <!-- Recipients loaded here -->
+                </div>
+            </div>
+
+            <div class="detail-section">
+                <h4>Activity Log</h4>
+                <div id="activityLog">
+                    <!-- Activity loaded here -->
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn-primary" onclick="downloadDocument()">
+                    <i class="fas fa-download"></i> Download
+                </button>
+                <button class="btn-outline" onclick="window.location.href='dashboard.html'">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Viewer -->
+        <main class="viewer-main">
+            <div class="viewer-toolbar">
+                <div class="toolbar-controls">
+                    <button class="toolbar-btn" onclick="previousPage()">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <span id="pageIndicator">Page 1 of 1</span>
+                    <button class="toolbar-btn" onclick="nextPage()">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                <div class="toolbar-controls">
+                    <button class="toolbar-btn" onclick="zoomOut()">
+                        <i class="fas fa-search-minus"></i>
+                    </button>
+                    <span id="zoomLevel">100%</span>
+                    <button class="toolbar-btn" onclick="zoomIn()">
+                        <i class="fas fa-search-plus"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="fitToWidth()">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="document-viewer">
+                <div class="viewer-wrapper" id="viewerWrapper">
+                    <!-- Document pages rendered here -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/viewer.js"></script>
+</body>
+</html>

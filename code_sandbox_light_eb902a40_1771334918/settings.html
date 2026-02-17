@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - SignFlow</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/settings.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <i class="fas fa-pen-nib"></i>
+                <span>SignFlow</span>
+            </div>
+            <div class="nav-menu">
+                <a href="index.html">Home</a>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="settings.html" class="active">Settings</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Settings Container -->
+    <div class="settings-container">
+        <div class="settings-sidebar">
+            <h2>Settings</h2>
+            <div class="settings-menu">
+                <a href="#profile" class="settings-menu-item active" data-tab="profile">
+                    <i class="fas fa-user"></i>
+                    <span>Profile</span>
+                </a>
+                <a href="#signatures" class="settings-menu-item" data-tab="signatures">
+                    <i class="fas fa-signature"></i>
+                    <span>My Signatures</span>
+                </a>
+                <a href="#notifications" class="settings-menu-item" data-tab="notifications">
+                    <i class="fas fa-bell"></i>
+                    <span>Notifications</span>
+                </a>
+                <a href="#security" class="settings-menu-item" data-tab="security">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Security</span>
+                </a>
+                <a href="#data" class="settings-menu-item" data-tab="data">
+                    <i class="fas fa-database"></i>
+                    <span>Data & Storage</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="settings-main">
+            <!-- Profile Tab -->
+            <div class="settings-tab active" id="profile-tab">
+                <div class="settings-header">
+                    <h1>Profile Settings</h1>
+                    <p>Manage your personal information</p>
+                </div>
+
+                <div class="settings-section">
+                    <div class="form-group">
+                        <label for="userName">Full Name</label>
+                        <input type="text" id="userName" placeholder="Enter your full name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="userEmail">Email Address</label>
+                        <input type="email" id="userEmail" placeholder="Enter your email">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="userTitle">Job Title</label>
+                        <input type="text" id="userTitle" placeholder="Enter your job title">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="userCompany">Company</label>
+                        <input type="text" id="userCompany" placeholder="Enter your company name">
+                    </div>
+
+                    <button class="btn-primary" onclick="saveProfile()">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                </div>
+            </div>
+
+            <!-- Signatures Tab -->
+            <div class="settings-tab" id="signatures-tab">
+                <div class="settings-header">
+                    <h1>My Signatures</h1>
+                    <p>Manage your saved signatures</p>
+                </div>
+
+                <div class="settings-section">
+                    <button class="btn-primary" onclick="createNewSignature()">
+                        <i class="fas fa-plus"></i> Create New Signature
+                    </button>
+
+                    <div id="signaturesList" class="signatures-list">
+                        <!-- Signatures loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notifications Tab -->
+            <div class="settings-tab" id="notifications-tab">
+                <div class="settings-header">
+                    <h1>Notification Preferences</h1>
+                    <p>Choose how you want to be notified</p>
+                </div>
+
+                <div class="settings-section">
+                    <div class="notification-item">
+                        <div class="notification-info">
+                            <h3>Email Notifications</h3>
+                            <p>Receive email updates about your documents</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="emailNotifications" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="notification-item">
+                        <div class="notification-info">
+                            <h3>Document Viewed</h3>
+                            <p>Get notified when someone views your document</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="notifyViewed" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="notification-item">
+                        <div class="notification-info">
+                            <h3>Document Signed</h3>
+                            <p>Get notified when someone signs your document</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="notifySigned" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="notification-item">
+                        <div class="notification-info">
+                            <h3>Reminders</h3>
+                            <p>Receive reminders for pending signatures</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="notifyReminders" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <button class="btn-primary" onclick="saveNotifications()">
+                        <i class="fas fa-save"></i> Save Preferences
+                    </button>
+                </div>
+            </div>
+
+            <!-- Security Tab -->
+            <div class="settings-tab" id="security-tab">
+                <div class="settings-header">
+                    <h1>Security Settings</h1>
+                    <p>Manage your account security</p>
+                </div>
+
+                <div class="settings-section">
+                    <div class="security-item">
+                        <i class="fas fa-lock"></i>
+                        <div>
+                            <h3>Change Password</h3>
+                            <p>Update your password regularly for security</p>
+                        </div>
+                        <button class="btn-outline">Change</button>
+                    </div>
+
+                    <div class="security-item">
+                        <i class="fas fa-mobile-alt"></i>
+                        <div>
+                            <h3>Two-Factor Authentication</h3>
+                            <p>Add an extra layer of security to your account</p>
+                        </div>
+                        <button class="btn-outline">Enable</button>
+                    </div>
+
+                    <div class="security-item">
+                        <i class="fas fa-history"></i>
+                        <div>
+                            <h3>Login History</h3>
+                            <p>View recent login activity</p>
+                        </div>
+                        <button class="btn-outline">View</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Tab -->
+            <div class="settings-tab" id="data-tab">
+                <div class="settings-header">
+                    <h1>Data & Storage</h1>
+                    <p>Manage your data and storage</p>
+                </div>
+
+                <div class="settings-section">
+                    <div class="storage-info">
+                        <h3>Storage Usage</h3>
+                        <div class="storage-bar">
+                            <div class="storage-fill" style="width: 35%"></div>
+                        </div>
+                        <p><span id="documentsCount">0</span> documents stored</p>
+                    </div>
+
+                    <div class="data-actions">
+                        <button class="btn-outline" onclick="exportData()">
+                            <i class="fas fa-download"></i> Export All Data
+                        </button>
+                        <button class="btn-outline" onclick="clearCompletedDocs()">
+                            <i class="fas fa-trash-alt"></i> Clear Completed Documents
+                        </button>
+                        <button class="btn-outline" style="color: var(--error-color); border-color: var(--error-color);" onclick="deleteAllData()">
+                            <i class="fas fa-exclamation-triangle"></i> Delete All Data
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/settings.js"></script>
+</body>
+</html>

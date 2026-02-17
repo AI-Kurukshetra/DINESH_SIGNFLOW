@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - SignFlow</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <i class="fas fa-pen-nib"></i>
+                <span>SignFlow</span>
+            </div>
+            <div class="nav-menu">
+                <a href="index.html">Home</a>
+                <a href="dashboard.html" class="active">Dashboard</a>
+                <a href="settings.html">Settings</a>
+                <div class="user-menu">
+                    <i class="fas fa-user-circle"></i>
+                    <span id="userName">Demo User</span>
+                </div>
+            </div>
+            <div class="nav-toggle" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Container -->
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <a href="#inbox" class="sidebar-item active" data-tab="inbox">
+                    <i class="fas fa-inbox"></i>
+                    <span>Inbox</span>
+                    <span class="badge" id="inboxCount">0</span>
+                </a>
+                <a href="#sent" class="sidebar-item" data-tab="sent">
+                    <i class="fas fa-paper-plane"></i>
+                    <span>Sent</span>
+                    <span class="badge" id="sentCount">0</span>
+                </a>
+                <a href="#completed" class="sidebar-item" data-tab="completed">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Completed</span>
+                    <span class="badge" id="completedCount">0</span>
+                </a>
+                <a href="#templates" class="sidebar-item" data-tab="templates">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Templates</span>
+                </a>
+                <div class="sidebar-divider"></div>
+                <a href="upload.html" class="sidebar-item sidebar-action">
+                    <i class="fas fa-upload"></i>
+                    <span>Upload Document</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <!-- Header -->
+            <div class="dashboard-header">
+                <h1 id="tabTitle">Inbox</h1>
+                <div class="dashboard-actions">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="Search documents...">
+                    </div>
+                    <a href="upload.html" class="btn-primary btn-icon">
+                        <i class="fas fa-plus"></i>
+                        New Document
+                    </a>
+                </div>
+            </div>
+
+            <!-- Tab Content: Inbox -->
+            <div id="inbox-content" class="tab-content active">
+                <div class="content-header">
+                    <p class="content-subtitle">Documents waiting for your signature</p>
+                </div>
+                <div id="inboxDocuments" class="documents-grid">
+                    <!-- Documents will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Tab Content: Sent -->
+            <div id="sent-content" class="tab-content">
+                <div class="content-header">
+                    <p class="content-subtitle">Documents you've sent to others</p>
+                </div>
+                <div id="sentDocuments" class="documents-grid">
+                    <!-- Documents will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Tab Content: Completed -->
+            <div id="completed-content" class="tab-content">
+                <div class="content-header">
+                    <p class="content-subtitle">All signed and completed documents</p>
+                </div>
+                <div id="completedDocuments" class="documents-grid">
+                    <!-- Documents will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Tab Content: Templates -->
+            <div id="templates-content" class="tab-content">
+                <div class="content-header">
+                    <p class="content-subtitle">Reusable document templates</p>
+                </div>
+                <div id="templatesGrid" class="templates-grid">
+                    <div class="template-card" onclick="createFromTemplate('nda')">
+                        <div class="template-icon">
+                            <i class="fas fa-file-contract"></i>
+                        </div>
+                        <h3>Non-Disclosure Agreement</h3>
+                        <p>Protect confidential information</p>
+                        <button class="btn-outline btn-small">Use Template</button>
+                    </div>
+                    <div class="template-card" onclick="createFromTemplate('contract')">
+                        <div class="template-icon">
+                            <i class="fas fa-handshake"></i>
+                        </div>
+                        <h3>Service Contract</h3>
+                        <p>Professional service agreements</p>
+                        <button class="btn-outline btn-small">Use Template</button>
+                    </div>
+                    <div class="template-card" onclick="createFromTemplate('invoice')">
+                        <div class="template-icon">
+                            <i class="fas fa-file-invoice"></i>
+                        </div>
+                        <h3>Invoice</h3>
+                        <p>Payment request documents</p>
+                        <button class="btn-outline btn-small">Use Template</button>
+                    </div>
+                    <div class="template-card" onclick="createFromTemplate('agreement')">
+                        <div class="template-icon">
+                            <i class="fas fa-file-signature"></i>
+                        </div>
+                        <h3>General Agreement</h3>
+                        <p>Multi-purpose agreement template</p>
+                        <button class="btn-outline btn-small">Use Template</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <i class="fas fa-inbox"></i>
+                <h3>No documents yet</h3>
+                <p>Start by uploading a document or creating one from a template</p>
+                <a href="upload.html" class="btn-primary">Upload Your First Document</a>
+            </div>
+        </main>
+    </div>
+
+    <!-- Document Modal -->
+    <div id="documentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Document Details</h2>
+                <span class="modal-close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Content loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

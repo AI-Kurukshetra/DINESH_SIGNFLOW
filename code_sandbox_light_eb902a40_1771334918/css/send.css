@@ -1,0 +1,190 @@
+/* Send Page Styles */
+.send-container {
+    min-height: calc(100vh - 80px);
+    background: linear-gradient(135deg, #F5F7FA 0%, #E8EEFF 100%);
+    padding: 3rem 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.send-card {
+    background-color: var(--white);
+    border-radius: 12px;
+    padding: 3rem;
+    max-width: 700px;
+    width: 100%;
+    box-shadow: var(--shadow-lg);
+}
+
+.send-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.success-icon {
+    margin-bottom: 1.5rem;
+}
+
+.success-icon i {
+    font-size: 4rem;
+    color: var(--success-color);
+}
+
+.send-header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--text-dark);
+}
+
+.send-header p {
+    color: var(--text-gray);
+    font-size: 1.1rem;
+}
+
+.document-summary,
+.recipients-summary,
+.email-message-section {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background-color: var(--secondary-color);
+    border-radius: 12px;
+}
+
+.document-summary h3,
+.recipients-summary h3,
+.email-message-section h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--text-dark);
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.summary-item:last-child {
+    border-bottom: none;
+}
+
+.summary-item label {
+    font-weight: 500;
+    color: var(--text-gray);
+}
+
+.summary-item span {
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.recipient-card {
+    background-color: var(--white);
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+    border-left: 4px solid var(--primary-color);
+}
+
+.recipient-card:last-child {
+    margin-bottom: 0;
+}
+
+.recipient-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.recipient-avatar {
+    width: 40px;
+    height: 40px;
+    background-color: var(--primary-color);
+    color: var(--white);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+.recipient-details {
+    flex: 1;
+}
+
+.recipient-name {
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.recipient-email {
+    font-size: 0.9rem;
+    color: var(--text-gray);
+}
+
+.recipient-fields {
+    font-size: 0.85rem;
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.message-preview {
+    background-color: var(--white);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.message-preview p {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.message-preview p:last-child {
+    margin-bottom: 0;
+}
+
+.send-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.send-actions button {
+    flex: 1;
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+    .send-container {
+        padding: 1.5rem;
+    }
+
+    .send-card {
+        padding: 2rem 1.5rem;
+    }
+
+    .send-header h1 {
+        font-size: 1.75rem;
+    }
+
+    .send-actions {
+        flex-direction: column;
+    }
+
+    .recipient-info {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+    }
+
+    .summary-item {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}

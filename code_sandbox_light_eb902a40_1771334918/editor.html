@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Editor - SignFlow</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/editor.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <i class="fas fa-pen-nib"></i>
+                <span>SignFlow</span>
+            </div>
+            <div class="nav-actions">
+                <button class="btn-outline btn-small" onclick="cancelEdit()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button class="btn-primary btn-small" onclick="saveAndContinue()">
+                    <i class="fas fa-check"></i> Save & Continue
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Editor Container -->
+    <div class="editor-container">
+        <!-- Sidebar - Field Palette -->
+        <aside class="field-palette">
+            <div class="palette-header">
+                <h3>Add Fields</h3>
+                <p>Drag fields onto the document</p>
+            </div>
+
+            <div class="field-categories">
+                <!-- Signature Fields -->
+                <div class="field-category">
+                    <h4><i class="fas fa-signature"></i> Signature Fields</h4>
+                    <div class="field-items">
+                        <div class="field-item" draggable="true" data-field-type="signature">
+                            <i class="fas fa-pen-fancy"></i>
+                            <span>Signature</span>
+                        </div>
+                        <div class="field-item" draggable="true" data-field-type="initials">
+                            <i class="fas fa-font"></i>
+                            <span>Initials</span>
+                        </div>
+                        <div class="field-item" draggable="true" data-field-type="date">
+                            <i class="fas fa-calendar"></i>
+                            <span>Date Signed</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Text Fields -->
+                <div class="field-category">
+                    <h4><i class="fas fa-text-height"></i> Text Fields</h4>
+                    <div class="field-items">
+                        <div class="field-item" draggable="true" data-field-type="text">
+                            <i class="fas fa-align-left"></i>
+                            <span>Text Box</span>
+                        </div>
+                        <div class="field-item" draggable="true" data-field-type="name">
+                            <i class="fas fa-user"></i>
+                            <span>Full Name</span>
+                        </div>
+                        <div class="field-item" draggable="true" data-field-type="email">
+                            <i class="fas fa-envelope"></i>
+                            <span>Email</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Other Fields -->
+                <div class="field-category">
+                    <h4><i class="fas fa-check-square"></i> Other Fields</h4>
+                    <div class="field-items">
+                        <div class="field-item" draggable="true" data-field-type="checkbox">
+                            <i class="fas fa-check-square"></i>
+                            <span>Checkbox</span>
+                        </div>
+                        <div class="field-item" draggable="true" data-field-type="radio">
+                            <i class="fas fa-dot-circle"></i>
+                            <span>Radio Button</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recipients (for send mode) -->
+            <div id="recipientsPanel" style="display: none;">
+                <div class="palette-divider"></div>
+                <div class="recipients-list">
+                    <h4><i class="fas fa-users"></i> Assign to:</h4>
+                    <div id="recipientButtons">
+                        <!-- Recipient buttons loaded dynamically -->
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Editor Area -->
+        <main class="editor-main">
+            <div class="editor-toolbar">
+                <div class="toolbar-left">
+                    <h2 id="documentTitle">Document Title</h2>
+                </div>
+                <div class="toolbar-right">
+                    <button class="toolbar-btn" onclick="zoomOut()">
+                        <i class="fas fa-search-minus"></i>
+                    </button>
+                    <span id="zoomLevel">100%</span>
+                    <button class="toolbar-btn" onclick="zoomIn()">
+                        <i class="fas fa-search-plus"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="fitToWidth()">
+                        <i class="fas fa-arrows-alt-h"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Document Canvas -->
+            <div class="document-canvas" id="documentCanvas">
+                <div class="canvas-wrapper" id="canvasWrapper">
+                    <!-- Document pages will be rendered here -->
+                    <div class="document-page" id="page1">
+                        <div class="page-overlay" data-page="1">
+                            <!-- Fields will be dropped here -->
+                        </div>
+                        <div class="page-number">Page 1</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Properties Panel -->
+        <aside class="properties-panel" id="propertiesPanel" style="display: none;">
+            <div class="panel-header">
+                <h3>Field Properties</h3>
+                <button class="btn-icon" onclick="closePropertiesPanel()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label>Field Type</label>
+                    <input type="text" id="fieldType" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Label</label>
+                    <input type="text" id="fieldLabel" placeholder="Enter field label">
+                </div>
+                <div class="form-group" id="recipientGroup" style="display: none;">
+                    <label>Assigned to</label>
+                    <select id="fieldRecipient">
+                        <!-- Options loaded dynamically -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Required</label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="fieldRequired">
+                        <span>This field is required</span>
+                    </label>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-outline" onclick="deleteField()">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                    <button class="btn-primary" onclick="saveFieldProperties()">
+                        Save
+                    </button>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Help Tooltip -->
+    <div class="help-tooltip">
+        <i class="fas fa-info-circle"></i>
+        <span>Drag fields from the left panel onto the document where signatures and information are needed</span>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/editor.js"></script>
+</body>
+</html>

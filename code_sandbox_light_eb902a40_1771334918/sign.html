@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Document - SignFlow</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/sign.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <i class="fas fa-pen-nib"></i>
+                <span>SignFlow</span>
+            </div>
+            <div class="nav-actions">
+                <button class="btn-outline btn-small" onclick="saveDraft()">
+                    <i class="fas fa-save"></i> Save Draft
+                </button>
+                <button class="btn-primary btn-small" onclick="completeSignature()">
+                    <i class="fas fa-check"></i> Complete
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sign Container -->
+    <div class="sign-container">
+        <!-- Document Sidebar -->
+        <aside class="document-sidebar">
+            <div class="sidebar-header">
+                <h3 id="documentTitle">Document Title</h3>
+                <div class="document-status">
+                    <span class="status-badge">Ready to Sign</span>
+                </div>
+            </div>
+
+            <div class="document-info">
+                <div class="info-item">
+                    <i class="fas fa-user"></i>
+                    <div>
+                        <label>From</label>
+                        <span id="senderName">-</span>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-file"></i>
+                    <div>
+                        <label>Pages</label>
+                        <span id="pageCount">-</span>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-calendar"></i>
+                    <div>
+                        <label>Date</label>
+                        <span id="docDate">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="fields-checklist">
+                <h4>Required Fields</h4>
+                <div id="fieldsList">
+                    <!-- Fields will be loaded here -->
+                </div>
+            </div>
+
+            <div class="progress-indicator">
+                <div class="progress-text">
+                    <span>Progress</span>
+                    <span id="progressPercent">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Sign Area -->
+        <main class="sign-main">
+            <div class="sign-toolbar">
+                <div class="toolbar-left">
+                    <button class="toolbar-btn" onclick="previousPage()">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <span id="pageIndicator">Page 1 of 1</span>
+                    <button class="toolbar-btn" onclick="nextPage()">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                <div class="toolbar-right">
+                    <button class="toolbar-btn" onclick="zoomOut()">
+                        <i class="fas fa-search-minus"></i>
+                    </button>
+                    <span id="zoomLevel">100%</span>
+                    <button class="toolbar-btn" onclick="zoomIn()">
+                        <i class="fas fa-search-plus"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="document-viewer" id="documentViewer">
+                <div class="viewer-wrapper" id="viewerWrapper">
+                    <!-- Document pages rendered here -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Signature Modal -->
+    <div id="signatureModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2>Add Your Signature</h2>
+                <span class="modal-close" onclick="closeSignatureModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <!-- Signature Tabs -->
+                <div class="signature-tabs">
+                    <button class="tab-btn active" data-tab="draw" onclick="switchSignatureTab('draw')">
+                        <i class="fas fa-pen"></i> Draw
+                    </button>
+                    <button class="tab-btn" data-tab="type" onclick="switchSignatureTab('type')">
+                        <i class="fas fa-keyboard"></i> Type
+                    </button>
+                    <button class="tab-btn" data-tab="upload" onclick="switchSignatureTab('upload')">
+                        <i class="fas fa-upload"></i> Upload
+                    </button>
+                </div>
+
+                <!-- Draw Tab -->
+                <div class="signature-tab-content active" id="draw-tab">
+                    <div class="canvas-container">
+                        <canvas id="signatureCanvas" width="600" height="200"></canvas>
+                    </div>
+                    <div class="canvas-controls">
+                        <button class="btn-outline btn-small" onclick="clearCanvas()">
+                            <i class="fas fa-eraser"></i> Clear
+                        </button>
+                        <select id="penColor" onchange="updatePenColor()">
+                            <option value="#000000">Black</option>
+                            <option value="#0066FF">Blue</option>
+                            <option value="#FF0000">Red</option>
+                        </select>
+                        <input type="range" id="penSize" min="1" max="5" value="2" oninput="updatePenSize()">
+                    </div>
+                </div>
+
+                <!-- Type Tab -->
+                <div class="signature-tab-content" id="type-tab">
+                    <div class="type-signature">
+                        <input type="text" id="signatureText" placeholder="Type your name" oninput="updateTypedSignature()">
+                        <div class="signature-preview-container">
+                            <div class="signature-fonts">
+                                <div class="font-option active" data-font="cursive" onclick="selectFont('cursive')">
+                                    <div class="font-preview" style="font-family: 'Brush Script MT', cursive;">
+                                        <span id="preview-cursive">Your Signature</span>
+                                    </div>
+                                </div>
+                                <div class="font-option" data-font="script" onclick="selectFont('script')">
+                                    <div class="font-preview" style="font-family: 'Dancing Script', cursive;">
+                                        <span id="preview-script">Your Signature</span>
+                                    </div>
+                                </div>
+                                <div class="font-option" data-font="elegant" onclick="selectFont('elegant')">
+                                    <div class="font-preview" style="font-family: 'Great Vibes', cursive;">
+                                        <span id="preview-elegant">Your Signature</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upload Tab -->
+                <div class="signature-tab-content" id="upload-tab">
+                    <div class="upload-signature">
+                        <div class="upload-area" onclick="document.getElementById('signatureFile').click()">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Click to upload signature image</p>
+                            <small>PNG, JPG (Max 2MB)</small>
+                        </div>
+                        <input type="file" id="signatureFile" accept="image/*" hidden onchange="handleSignatureUpload(event)">
+                        <div id="uploadPreview" class="upload-preview" style="display: none;">
+                            <img id="uploadedImage" src="" alt="Signature">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn-outline" onclick="closeSignatureModal()">Cancel</button>
+                    <button class="btn-primary" onclick="saveSignature()">
+                        <i class="fas fa-check"></i> Apply Signature
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Text Input Modal -->
+    <div id="textInputModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="textModalTitle">Enter Text</h2>
+                <span class="modal-close" onclick="closeTextModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label id="textInputLabel">Enter value:</label>
+                    <input type="text" id="textInputField" class="form-control">
+                </div>
+                <div class="modal-actions">
+                    <button class="btn-outline" onclick="closeTextModal()">Cancel</button>
+                    <button class="btn-primary" onclick="saveTextInput()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/sign.js"></script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Document - SignFlow</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/send.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <i class="fas fa-pen-nib"></i>
+                <span>SignFlow</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Send Container -->
+    <div class="send-container">
+        <div class="send-card">
+            <div class="send-header">
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h1>Ready to Send</h1>
+                <p>Review the details and send your document for signature</p>
+            </div>
+
+            <!-- Document Summary -->
+            <div class="document-summary">
+                <h3>Document Details</h3>
+                <div class="summary-item">
+                    <label>Document:</label>
+                    <span id="documentName">-</span>
+                </div>
+                <div class="summary-item">
+                    <label>Total Fields:</label>
+                    <span id="totalFields">-</span>
+                </div>
+                <div class="summary-item">
+                    <label>Signing Order:</label>
+                    <span id="signingOrder">-</span>
+                </div>
+            </div>
+
+            <!-- Recipients List -->
+            <div class="recipients-summary">
+                <h3>Recipients (<span id="recipientCount">0</span>)</h3>
+                <div id="recipientsList">
+                    <!-- Recipients loaded here -->
+                </div>
+            </div>
+
+            <!-- Email Message -->
+            <div class="email-message-section">
+                <h3>Email Message</h3>
+                <div class="message-preview" id="messagePreview">
+                    <p><strong>Subject:</strong> Please sign: <span id="emailSubject">Document</span></p>
+                    <p id="emailBody">Please review and sign this document.</p>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="send-actions">
+                <button class="btn-outline btn-large" onclick="window.location.href='dashboard.html'">
+                    Cancel
+                </button>
+                <button class="btn-primary btn-large" onclick="sendDocument()">
+                    <i class="fas fa-paper-plane"></i> Send Document
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-body" style="text-align: center; padding: 3rem 2rem;">
+                <div class="success-icon" style="margin-bottom: 2rem;">
+                    <i class="fas fa-check-circle" style="font-size: 5rem; color: var(--success-color);"></i>
+                </div>
+                <h2 style="margin-bottom: 1rem;">Document Sent!</h2>
+                <p style="color: var(--text-gray); margin-bottom: 2rem;">
+                    Your document has been sent to all recipients. You'll receive notifications as they view and sign.
+                </p>
+                <button class="btn-primary" onclick="window.location.href='dashboard.html'">
+                    Go to Dashboard
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/send.js"></script>
+</body>
+</html>
